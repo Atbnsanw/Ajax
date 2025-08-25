@@ -1,0 +1,29 @@
+[package]
+name = "thfhe"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mpc = { path = "../mpc" }
+network = { version = "0.1.0", path = "../network" }
+
+algebra = { version = "0.1.0", path = "../algebra", default-features = false  }
+lattice = { version = "0.1.0", path = "../lattice", default-features = false  }
+fhe_core = { version = "0.1.0", path = "../fhe_core", default-features = false  }
+itertools = { workspace = true }
+
+rand = { workspace = true }
+crossbeam = "0.8.4"
+mimalloc = "0.1.44"
+
+[dev-dependencies]
+clap = { version = "4", features = ["derive"] }
+
+[features]
+default = ["concrete-ntt"]
+concrete-ntt = [
+    "algebra/concrete-ntt",
+    "lattice/concrete-ntt",
+    "fhe_core/concrete-ntt",
+]
+nightly = ["algebra/nightly", "lattice/nightly", "fhe_core/nightly"]

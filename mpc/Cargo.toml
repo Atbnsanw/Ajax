@@ -1,0 +1,17 @@
+[package]
+name = "mpc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+algebra = { version = "0.1.0", path = "../algebra", default-features = false  }
+network = { version = "0.1.0", path = "../network", default-features = false }
+rand.workspace = true
+bytemuck.workspace = true
+crossbeam = "0.8.4"
+parking_lot = "0.12"
+
+[features]
+default = ["concrete-ntt"]
+concrete-ntt = ["algebra/concrete-ntt"]
+nightly = ["algebra/nightly"]

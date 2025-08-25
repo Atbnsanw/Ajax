@@ -1,0 +1,51 @@
+use algebra::{Field, U64FieldEval};
+
+#[derive(Default)]
+pub struct Matrix {
+    pub data: Vec<Vec<u64>>,
+}
+
+impl Matrix {
+    pub fn new(rows: usize, cols: usize) -> Self {
+        let data = vec![vec![0; cols]; rows];
+        Matrix { data }
+    }
+
+    pub fn transposed_sub_matrix_with_data(
+        matrix: &[Vec<u64>],
+        start_row: usize,
+        end_row: usize,
+        start_col: usize,
+        end_col: usize,
+    ) -> Matrix {
+        let mut sub_matrix = Matrix::new(end_col - start_col, end_row - start_row);
+
+        #[allow(clippy::needless_range_loop)]
+        for i in start_row..end_row {
+            for j in start_col..end_col {
+                sub_matrix.data[j - start_col][i - start_row] = matrix[i][j];
+            }
+        }
+        sub_matrix
+    }
+
+    pub fn multiply_with_data<const P: u64>(&self, other: &[Vec<u64>]) -> Matrix {
+        let mut result = Matrix::new(self.data.len(), other[0].len());
+        for i in 0..self.data.len() {
+            for k in 0..self.data[i].len() {
+                for j in 0..other[0].len() {
+                    result.data[i][j] =
+                        <U64FieldEval<P>>::mul_add(self.data[i][k], other[k][j], result.data[i][j]);
+                }
+            }
+        }
+        result
+    }
+
+    pub fn multiply_with_vec<const P: u64>(&self, other: &[u64]) -> Vec<u64> {
+        self.data
+            .iter()
+            .map(|row| <U64FieldEval<P>>::dot_product(row, other))
+            .collect()
+    }
+}
